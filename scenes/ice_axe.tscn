@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3c5y7ns0btas"]
+
+[ext_resource type="Texture2D" uid="uid://c3rbnicrj1xf3" path="res://assets/ice_axe.png" id="1_em7yp"]
+[ext_resource type="Script" path="res://scripts/ice_axe.gd" id="1_h7b2m"]
+
+[node name="Ice Axe" type="Node2D"]
+script = ExtResource("1_h7b2m")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = -1.93732
+texture = ExtResource("1_em7yp")
+offset = Vector2(-2.5, -14.5)
+
+[node name="Tip" type="Node2D" parent="."]
+position = Vector2(-20, 22)

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemResource" load_steps=3 format=3 uid="uid://ctsx3k7nhftim"]
+
+[ext_resource type="Script" path="res://resources/item_resource.gd" id="1_0nv3x"]
+[ext_resource type="Texture2D" uid="uid://c3rbnicrj1xf3" path="res://assets/ice_axe.png" id="2_eweqk"]
+
+[resource]
+script = ExtResource("1_0nv3x")
+name = "Ice Axe"
+type = "Axe"
+sprite_texture = ExtResource("2_eweqk")
+offset = Vector2(-2.5, -14.5)
+rotation = 111.0
+tip_pos = Vector2(-20, 22)
