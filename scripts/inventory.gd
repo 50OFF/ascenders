@@ -24,6 +24,7 @@ extends Node
 @onready var ice_axe_2: RigidBody2D = $"../Sprites Left/IceAxe2"
 
 const ice_axe = preload("res://resources/ice_axe.tres")
+const ice_screw = preload("res://resources/ice_screw.tres")
 
 var equipped_item1: ItemResource = null
 var equipped_item2: ItemResource = null
@@ -37,20 +38,21 @@ var item2r_sprite
 
 
 func equip1(item: ItemResource):
+	if equipped_item1: unequip1()
 	if item == ice_axe:
 		ice_axe_1.visible = false
 	equipped_item1 = item
 	item1l_sprite = Sprite2D.new()
 	item1l_sprite.texture = item.sprite_texture
 	item1l_sprite.offset = item.offset
-	item1l_sprite.rotation = item.rotation
+	item1l_sprite.rotation = deg_to_rad(item.rotation)
 	item1l_sprite.position = Vector2(0, 3)
 	tip1l.position = item.tip_pos
 	hand_1l_area.position = item.tip_pos
 	hand_1l.add_child(item1l_sprite)
 	
 	item1r_sprite = item1l_sprite.duplicate()
-	item1r_sprite.rotation = - item.rotation
+	item1r_sprite.rotation = - deg_to_rad(item.rotation)
 	item1r_sprite.offset = Vector2(-item.offset.x, item.offset.y)
 	item1r_sprite.flip_h = true
 	tip1r.position = Vector2(-item.tip_pos.x, item.tip_pos.y)
@@ -59,20 +61,21 @@ func equip1(item: ItemResource):
 
 
 func equip2(item: ItemResource):
+	if equipped_item2: unequip2()
 	if item == ice_axe:
 		ice_axe_2.visible = false
 	equipped_item2 = item
 	item2l_sprite = Sprite2D.new()
 	item2l_sprite.texture = item.sprite_texture
 	item2l_sprite.offset = item.offset
-	item2l_sprite.rotation = item.rotation
+	item2l_sprite.rotation = deg_to_rad(item.rotation)
 	item2l_sprite.position = Vector2(0, 3)
 	tip2l.position = item.tip_pos
 	hand_2l_area.position = item.tip_pos
 	hand_2l.add_child(item2l_sprite)
 	
 	item2r_sprite = item2l_sprite.duplicate()
-	item2r_sprite.rotation = - item.rotation
+	item2r_sprite.rotation = - deg_to_rad(item.rotation)
 	item2r_sprite.offset = Vector2(-item.offset.x, item.offset.y)
 	item2r_sprite.flip_h = true
 	tip2r.position = Vector2(-item.tip_pos.x, item.tip_pos.y)

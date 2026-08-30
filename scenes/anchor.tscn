@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://cv7np0ieu34wu"]
+
+[ext_resource type="Texture2D" uid="uid://dtkrd36ps6402" path="res://assets/ice_screw.png" id="1_gdjek"]
+
+[node name="Ice Screw" type="Node2D"]
+z_index = -1
+z_as_relative = false
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_gdjek")
+
+[node name="RopeAnchor" type="Node2D" parent="."]
+position = Vector2(3, 1)
+
+[node name="Tip" type="Node2D" parent="."]
+position = Vector2(-4, 0)

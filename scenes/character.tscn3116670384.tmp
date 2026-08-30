@@ -308,23 +308,23 @@ modifications/3 = SubResource("SkeletonModification2DCCDIK_hx3da")
 [node name="Sprites Left" type="Node2D" parent="."]
 
 [node name="HandB" type="Sprite2D" parent="Sprites Left"]
-position = Vector2(-18.0002, -1.99977)
-rotation = 1.00418
-scale = Vector2(0.999994, 0.999994)
+position = Vector2(-18, -2.00001)
+rotation = 0.306112
+scale = Vector2(0.999996, 0.999996)
 texture = ExtResource("4_tu08p")
 offset = Vector2(0, 3)
 
 [node name="ArmB" type="Sprite2D" parent="Sprites Left"]
-position = Vector2(-0.63654, -24.5995)
-rotation = 0.655118
-scale = Vector2(0.999994, 0.999994)
+position = Vector2(-0.634913, -24.5989)
+rotation = 0.655177
+scale = Vector2(0.999995, 0.999995)
 texture = ExtResource("6_m6fw4")
 offset = Vector2(0, 12)
 
 [node name="ShoulderB" type="Sprite2D" parent="Sprites Left"]
 position = Vector2(1.5, -47.5)
-rotation = 0.0930263
-scale = Vector2(0.999994, 0.999994)
+rotation = 0.0929533
+scale = Vector2(0.999993, 0.999993)
 texture = ExtResource("7_4f35o")
 offset = Vector2(0, 9.5)
 
@@ -500,24 +500,23 @@ rotation = -0.422263
 shape = SubResource("CapsuleShape2D_o34ap")
 
 [node name="BootB" type="Sprite2D" parent="Sprites Right"]
-position = Vector2(-23.0534, 48.4335)
-rotation = 0.753954
-scale = Vector2(1, 1)
+position = Vector2(-23.0536, 48.4333)
+rotation = 0.753928
 texture = ExtResource("1_hwdjf")
 offset = Vector2(5.5, 2.5)
 flip_h = true
 
 [node name="LegB" type="Sprite2D" parent="Sprites Right"]
-position = Vector2(0.600305, 36.483)
-rotation = 1.10298
-scale = Vector2(0.999999, 0.999999)
+position = Vector2(0.600328, 36.4832)
+rotation = 1.10299
+scale = Vector2(1, 1)
 texture = ExtResource("2_hkfso")
 offset = Vector2(0, 10.5)
 flip_h = true
 
 [node name="HipB" type="Sprite2D" parent="Sprites Right"]
 position = Vector2(-0.5, 0)
-rotation = -0.0301502
+rotation = -0.0301507
 scale = Vector2(0.999998, 0.999998)
 texture = ExtResource("3_j0kw1")
 offset = Vector2(0, 14)

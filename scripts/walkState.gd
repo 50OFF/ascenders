@@ -17,7 +17,8 @@ extends "res://scripts/state.gd"
 
 var step_rays = [fw_step_ray, bw_step_ray]
 
-var ice_axe = preload("res://resources/ice_axe.tres")
+const ice_axe = preload("res://resources/ice_axe.tres")
+const ice_screw = preload("res://resources/ice_screw.tres")
 
 var speed: float = 50.0
 
@@ -83,6 +84,9 @@ func input(event: InputEvent) -> void:
 			KEY_4:
 				if inventory.equipped_item2:
 					inventory.unequip2()
+			KEY_5:
+				if inventory.equipped_item1 != ice_screw:
+					inventory.equip1(ice_screw)
 			KEY_CTRL:
 				is_crouching = !is_crouching
 
@@ -162,27 +166,24 @@ func update_step_targets(direction: int):
 		ground_pos = fw_step_ray.get_collision_point() if fw_step_ray.is_colliding() else foot_1.global_position
 		next_ground_normal = fw_step_ray.get_collision_normal() if fw_step_ray.is_colliding() else Vector2.UP
 	
-	if rad_to_deg(next_ground_normal.angle()) + 90 >= 50:
-		wall_ahead = true
-	else:
-		wall_ahead = false
-	
 	if foot_1.global_position.distance_to(ground_pos) >= step_distance:
+		wall_ahead = rad_to_deg(next_ground_normal.angle()) + 90 >= 50
 		var prev_step_bias = step_distance/2 - ground_pos.distance_to(foot_2.global_position)
 		var step_vector = (ground_pos - foot_2.global_position).normalized()
 		target_position1 = ground_pos + step_vector * prev_step_bias
 	elif foot_2.global_position.distance_to(ground_pos) >= step_distance:
+		wall_ahead = rad_to_deg(next_ground_normal.angle()) + 90 >= 50
 		var prev_step_bias = step_distance/2 - ground_pos.distance_to(foot_1.global_position)
 		var step_vector = (ground_pos - foot_1.global_position).normalized()
 		target_position2 = ground_pos + step_vector * prev_step_bias
 
 
 func adjust_body_position(delta: float):
-	hips.rotation = lerp(hips.rotation, float(clamp((ground_normal.angle() + PI / 2) * -0.7, -PI / 6, 0)), 2 * delta)
+	hips.rotation = lerp(hips.rotation, clampf((ground_normal.angle() + PI / 2) * -0.7, -PI / 6, 0), 2 * delta)
 	if not is_crouching:
-		character.global_position.y = lerp(character.global_position.y, -70 + max(foot_1.global_position.y, foot_2.global_position.y), 7 * delta)
+		character.global_position.y = lerp(character.global_position.y, -65 + (foot_1.global_position.y + foot_2.global_position.y)/2, 7 * delta)
 	else:
-		character.global_position.y = lerp(character.global_position.y, -45 + max(foot_1.global_position.y, foot_2.global_position.y), 7 * delta)
+		character.global_position.y = lerp(character.global_position.y, -45 + (foot_1.global_position.y + foot_2.global_position.y)/2, 7 * delta)
 
 
 func move_feet(delta: float):

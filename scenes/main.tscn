@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://d4ff5a6631l5o"]
+[gd_scene load_steps=7 format=3 uid="uid://d4ff5a6631l5o"]
 
 [ext_resource type="PackedScene" uid="uid://c61wdk7am4d4j" path="res://scenes/character.tscn" id="1_80m6j"]
 [ext_resource type="Texture2D" uid="uid://bw1ixdcjl11x7" path="res://assets/e7d896587e9c68e349b08f1b1c756a60.jpg" id="1_x4f7c"]
+[ext_resource type="Script" uid="uid://cdqiytvf03s8k" path="res://scenes/ui.gd" id="2_tefeu"]
+[ext_resource type="Script" uid="uid://cfkxho6w4whhl" path="res://scripts/rope.gd" id="3_sugp2"]
+[ext_resource type="Texture2D" uid="uid://cx724xbg7jklg" path="res://assets/belt_test.png" id="3_tbgi4"]
 
 [sub_resource type="Environment" id="Environment_pupda"]
 background_mode = 3
@@ -28,24 +31,55 @@ texture = ExtResource("1_x4f7c")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pupda")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+script = ExtResource("2_tefeu")
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_left = 139.0
+offset_top = -114.0
+offset_right = 179.0
+offset_bottom = -74.0
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 96.0
+offset_right = 288.0
+offset_bottom = 161.0
+texture = ExtResource("3_tbgi4")
+
 [node name="Character" parent="." instance=ExtResource("1_80m6j")]
-position = Vector2(114, -115)
+position = Vector2(139, -115)
 
 [node name="Camera2D" type="Camera2D" parent="Character"]
-zoom = Vector2(3, 3)
+zoom = Vector2(2, 2)
 
 [node name="Ground" type="StaticBody2D" parent="."]
 scale = Vector2(3.17342, 3.17342)
 collision_layer = 3
 
 [node name="GroundPolygon" type="Polygon2D" parent="Ground"]
-polygon = PackedVector2Array(241.38, -0.315117, 0, 0, -122.896, -68.0654, -201.045, -157.874, -247.997, -288.648, -226.885, -375.935, -178.356, -434.232, -226.885, -565.321, -353.562, -616.37, -495.995, -620.151, -532.233, 198.209, 252.409, 209.238)
+polygon = PackedVector2Array(241.38, -0.315117, 0, 0, -21.1129, -72.1619, -25.5245, -145.269, -4.09653, -211.129, -48.8432, -275.098, -11.9745, -342.218, -57.9816, -411.543, -88.548, -471.101, -274.152, -503.558, -276.988, 203.251, 252.409, 209.238)
 
 [node name="GroundCollision" type="CollisionPolygon2D" parent="Ground"]
-polygon = PackedVector2Array(241.38, 0, 0, 0, -123.211, -68.0654, -201.045, -157.874, -247.997, -288.963, -226.885, -375.935, -178.356, -434.232, -226.885, -565.006, -353.562, -616.37, -495.995, -620.151, -422.888, -10.714, 244.216, 23.0036)
+polygon = PackedVector2Array(241.38, 0, 0, 0, -21.1129, -72.1619, -25.5245, -145.269, -4.09653, -211.129, -48.8432, -275.098, -11.9745, -342.218, -57.3514, -409.653, -87.9178, -470.47, -272.892, -503.243, -275.098, 13.5501, 244.216, 23.0036)
 
 [node name="GroundArea" type="Area2D" parent="Ground"]
-visible = false
 
 [node name="GroundCollision" type="CollisionPolygon2D" parent="Ground/GroundArea"]
-polygon = PackedVector2Array(241.38, 0, 0, 0, -123.211, -68.0654, -201.045, -157.874, -247.997, -288.963, -226.885, -375.935, -178.356, -434.232, -226.885, -565.006, -353.562, -616.37, -495.995, -620.151, -422.888, -10.714, 244.216, 23.0036)
+polygon = PackedVector2Array(241.38, 0, 0, 0, -21.1129, -72.1619, -25.5245, -145.269, -4.09653, -211.129, -48.8432, -275.098, -11.9745, -342.218, -57.3514, -409.653, -87.9178, -470.47, -272.892, -503.243, -275.098, 13.5501, 244.216, 23.0036)
+
+[node name="RopeSystem" type="Node2D" parent="."]
+script = ExtResource("3_sugp2")
+
+[node name="Line2D" type="Line2D" parent="RopeSystem"]
+points = PackedVector2Array(0, -8, 0, 8)
+width = 2.0
+default_color = Color(0.236349, 0.164434, 0.139111, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2

@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://d12gfsrjxwkii"]
+
+[ext_resource type="Script" uid="uid://i7cryy0kjs6d" path="res://scripts/snow_particles.gd" id="1_p7xfw"]
+
+[node name="Snow Particles" type="Node2D"]
+script = ExtResource("1_p7xfw")
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 10
+lifetime = 0.15
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.75
+direction = Vector2(0, 1)
+initial_velocity_min = 41.67
+initial_velocity_max = 158.33
+angle_min = -108.0
+angle_max = 84.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

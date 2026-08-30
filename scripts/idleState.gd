@@ -31,7 +31,8 @@ extends "res://scripts/state.gd"
 @onready var bw_step_ray: RayCast2D = $"../../Raycasts/BackwardStepCheck"
 
 # Preloads
-var ice_axe = preload("res://resources/ice_axe.tres")
+const ice_axe = preload("res://resources/ice_axe.tres")
+const ice_screw = preload("res://resources/ice_screw.tres")
 
 # State variables
 var is_mouse1_held: bool = false
@@ -113,6 +114,11 @@ func input(event: InputEvent) -> void:
 				KEY_4:
 					if inventory.equipped_item2:
 						inventory.unequip2()
+				KEY_5:
+					if inventory.equipped_item1 != ice_screw:
+						inventory.equip1(ice_screw)
+				KEY_CTRL:
+					is_crouching = !is_crouching
 				KEY_CTRL:
 					is_crouching = !is_crouching
 				KEY_F:

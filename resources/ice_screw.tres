@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemResource" load_steps=3 format=3 uid="uid://bbdtqbc1idiox"]
+
+[ext_resource type="Script" uid="uid://bsk78gjgbhfl4" path="res://resources/item_resource.gd" id="1_oy34c"]
+[ext_resource type="Texture2D" uid="uid://dtkrd36ps6402" path="res://assets/ice_screw.png" id="2_8mmpu"]
+
+[resource]
+script = ExtResource("1_oy34c")
+name = "Ice Screw"
+type = "Anchor"
+sprite_texture = ExtResource("2_8mmpu")
+offset = Vector2(-5, 0)
+rotation = -90.0
+tip_pos = Vector2(0, 5)

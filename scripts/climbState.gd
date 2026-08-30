@@ -4,6 +4,8 @@ extends "res://scripts/state.gd"
 
 @onready var hand_1_tip: Node2D = $"../../Skeleton2D Left/Hips/ShoulderF/ArmF/HandF/Tip"
 @onready var hand_2_tip: Node2D = $"../../Skeleton2D Left/Hips/ShoulderB/ArmB/HandB/Tip"
+@onready var foot_1_tip: Node2D = $"../../Skeleton2D Left/Hips/HipF/LegF/FootF/Tip"
+@onready var foot_2_tip: Node2D = $"../../Skeleton2D Left/Hips/HipB/LegB/FootB/Tip"
 @onready var hips: Bone2D = $"../../Skeleton2D Left/Hips"
 
 @onready var foot_1: Node2D = $"../../IK Targets/FootF Target"
@@ -15,8 +17,13 @@ extends "res://scripts/state.gd"
 @onready var down_step_ray: RayCast2D = $"../../Raycasts/DownStepCheck"
 @onready var wall_normal_check: RayCast2D = $"../../Raycasts/WallNormalCheck"
 
-@onready var walk_state = $"../WalkState"
+@onready var inventory: Node = $"../../Inventory"
 
+var anchor = preload("res://scenes/anchor.tscn")
+var snow_particles = preload("res://scenes/snow_particles.tscn")
+
+const ice_axe = preload("res://resources/ice_axe.tres")
+const ice_screw = preload("res://resources/ice_screw.tres")
 
 var wall_normal: Vector2
 
@@ -46,9 +53,14 @@ var is_mouse2_held: bool = false
 var is_axe1_stuck: bool = false
 var is_axe2_stuck: bool = false
 
+var is_screw1_stuck: bool = false
+var is_screw2_stuck: bool = false
+
 var world_mouse_position: Vector2
 
 var last_position = Vector2.ZERO
+
+var rope_connected: bool = false
 
 
 func enter(params):
@@ -84,6 +96,7 @@ func update(delta: float) -> void:
 	var direction_y = sign(character.global_position.y - last_position.y)
 	last_position = character.global_position
 	
+	check_for_fall(delta)
 	move_hands(delta)
 	update_step_targets(direction_y)
 	adjust_body_position(delta)
@@ -97,15 +110,52 @@ func input(event: InputEvent) -> void:
 				is_mouse1_held = event.pressed
 			MOUSE_BUTTON_RIGHT:
 				is_mouse2_held = event.pressed
+	if event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_1:
+				if inventory.equipped_item1 != ice_axe:
+					inventory.equip1(ice_axe)
+					is_screw1_stuck = false
+			KEY_2:
+				if inventory.equipped_item1:
+					inventory.unequip1()
+					is_axe1_stuck = false
+					is_screw1_stuck = false
+			KEY_3:
+				if inventory.equipped_item2 != ice_axe:
+					inventory.equip2(ice_axe)
+					is_screw2_stuck = false
+			KEY_4:
+				if inventory.equipped_item2:
+					inventory.unequip2()
+					is_axe2_stuck = false
+					is_screw2_stuck = false
+			KEY_5:
+				if inventory.equipped_item1 != ice_screw:
+					inventory.equip1(ice_screw)
+					is_axe1_stuck = false
+
+
+func check_for_fall(delta: float):
+	if not(is_axe1_stuck or is_axe2_stuck):
+		if rope_connected:
+			get_parent().change_state("RopeState", {"is_mouse1_held": is_mouse1_held, "is_mouse2_held": is_mouse2_held,
+													"foot_1_pos": foot_1.global_position, "foot_2_pos": foot_2.global_position})
+		elif rad_to_deg(wall_normal.angle()) + 90 < 50:
+			get_parent().change_state("IdleState", {"is_mouse1_held": is_mouse1_held, "is_mouse2_held": is_mouse2_held,
+													"foot_1_pos": foot_1.global_position, "foot_2_pos": foot_2.global_position})
+		else:
+			get_parent().change_state("FallState", {})
 
 #движение рук
 func move_hands(delta: float):
 	if is_mouse1_held:
 		is_axe1_stuck = false
+		is_screw1_stuck = false
 		world_mouse_position = get_viewport().get_camera_2d().get_global_mouse_position()
 		hand_1.global_position = lerp(hand_1.global_position, world_mouse_position, 20*delta)
 		hand_1_tp = world_mouse_position
-	elif is_axe1_stuck:
+	elif is_axe1_stuck or is_screw1_stuck:
 		hand_1.global_position = hand_1_tp
 	else:
 		hand_1.global_position = lerp(hand_1.global_position, character.global_position + Vector2(-25, +20), 3*delta)
@@ -122,19 +172,35 @@ func move_hands(delta: float):
 
 
 func _on_hand_f_area_area_entered(area: Area2D) -> void:
-	if get_parent().current_state == self and area.name == "GroundArea":
-		is_axe1_stuck = true
-		is_mouse1_held = false
-		hand_1.global_position = hand_1_tip.global_position
-		hand_1_tp = hand_1_tip.global_position
+	match inventory.equipped_item1:
+		ice_axe:
+			if get_parent().current_state == self and area.name == "GroundArea":
+				is_axe1_stuck = true
+				is_mouse1_held = false
+				hand_1.global_position = hand_1_tip.global_position
+				hand_1_tp = hand_1_tip.global_position
+				emit_particles(hand_1_tip.global_position)
+		ice_screw:
+			if get_parent().current_state == self and area.name == "GroundArea":
+				rope_connected = true
+				is_screw1_stuck = true
+				is_mouse1_held = false
+				hand_1.global_position = hand_1_tip.global_position
+				hand_1_tp = hand_1_tip.global_position
+				place_anchor(hand_1_tip.global_position)
+				emit_particles(hand_1_tip.global_position)
+				inventory.unequip1()
 
 
 func _on_hand_b_area_area_entered(area: Area2D) -> void:
-	if get_parent().current_state == self and area.name == "GroundArea":
-		is_axe2_stuck = true
-		is_mouse2_held = false
-		hand_2.global_position = hand_2_tip.global_position
-		hand_2_tp = hand_2_tip.global_position
+	match inventory.equipped_item2:
+		ice_axe:
+			if get_parent().current_state == self and area.name == "GroundArea":
+				is_axe2_stuck = true
+				is_mouse2_held = false
+				hand_2.global_position = hand_2_tip.global_position
+				hand_2_tp = hand_2_tip.global_position
+				emit_particles(hand_2_tip.global_position)
 
 #обновление целей шага
 func update_step_targets(direction: int):
@@ -155,7 +221,7 @@ func update_step_targets(direction: int):
 func adjust_body_position(delta: float):
 	character.rotation = lerp(character.rotation, wall_normal.angle() + PI/10, delta)
 	var foot
-	var hand
+	var hand = Vector2.ZERO
 	var ch_pos
 	var hf
 
@@ -167,13 +233,6 @@ func adjust_body_position(delta: float):
 		hand = hand_1_tip.global_position
 	elif (is_axe2_stuck and not is_mouse1_held):
 		hand = hand_2_tip.global_position
-	else:
-		if rad_to_deg(wall_normal.angle()) + 90 < 50:
-			get_parent().change_state("IdleState", {"is_mouse1_held": is_mouse1_held, "is_mouse2_held": is_mouse2_held,
-													"foot_1_pos": foot_1.global_position, "foot_2_pos": foot_2.global_position})
-		else:
-			get_parent().change_state("FallState", {})
-		return
 	
 	hf = hand - foot
 	ch_pos = foot + hf/2.5 + Vector2(-hf.y, hf.x).normalized() * 40
@@ -211,3 +270,21 @@ func move_along_curve(moving_object: Node2D, start_pos: Vector2, end_pos: Vector
 	control_point += wall_normal * curve_heigth
 	var new_pos = (1 - step_progress) * (1 - step_progress) * start_pos + 2 * (1 - step_progress) * step_progress * control_point + step_progress * step_progress * end_pos
 	moving_object.global_position = new_pos
+
+
+func place_anchor(position: Vector2):
+	var placed_anchor = anchor.instantiate()
+	get_tree().root.add_child(placed_anchor)
+	placed_anchor.global_position = position
+	placed_anchor.rotation = wall_normal.angle()
+	get_tree().current_scene.get_node("RopeSystem").add_anchor(placed_anchor.get_node("RopeAnchor").global_position)
+
+
+func emit_particles(position: Vector2):
+	var particles = snow_particles.instantiate()
+	get_tree().root.add_child(particles)
+	particles.global_position = position
+	particles.rotation = wall_normal.angle() - deg_to_rad(90)
+	particles.get_node("Particles").emitting = true
+	particles.get_node("Timer").start()
+	particles = null
